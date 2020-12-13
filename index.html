@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virtual list demo</title>
+  </head>
+  <body>
+    <header>
+      <h1>
+        A virtual list which can handle child items with variable heights.
+      </h1>
+      <h3>Usage:</h3>
+      <pre>virtualList(config: Config): Instance</pre>
+      <pre>
+type Config = {
+  container: Element                    // target element
+  containerHeight?: Number              // default: 500px
+  itemsCount: Number                    // items count
+  render: (index: Number) => Element    // callback to get item element
+  throttleMs?: Number                   // throttle updates
+}
+      </pre>
+      <pre>
+type Instance = {
+  update(newItemsCount: Number)         // re-calculate items
+  dispose()                             // remove event listeners
+}
+      </pre>
+    </header>
+
+    <div id="container" style="border: 1px dashed"></div>
+
+    <script src="/virtual-list.js"></script>
+
+    <script>
+      const heights = [50, 75, 100, 125, 150, 200];
+      const colors = ["tomato", "steelblue", "teal", "tan", "olive", "peru"];
+      const items = Array(100000)
+        .fill(0)
+        .map(() => heights[~~(Math.random() * heights.length)]);
+
+      virtualList({
+        container: document.getElementById("container"),
+        itemsCount: items.length,
+        render: (i) => {
+          const h = items[i];
+          const div = document.createElement("div");
+          div.style.height = h + "px";
+          div.style.background = colors[heights.indexOf(h)];
+          div.style.display = "flex";
+          div.style.alignItems = "center";
+          div.style.paddingLeft = "2em";
+          div.style.borderBottom = "1px solid";
+          div.style.boxSizing = "border-box";
+          div.innerText = "Item #" + i;
+          return div;
+        },
+      });
+    </script>
+  </body>
+</html>
